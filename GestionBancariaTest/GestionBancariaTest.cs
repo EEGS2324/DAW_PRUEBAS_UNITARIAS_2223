@@ -1,7 +1,7 @@
-﻿using GestionBancariaAppNS;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using GestionBancariaAppNS;
+
 namespace GestionBancariaTest
 {
     [TestClass]
@@ -14,11 +14,12 @@ namespace GestionBancariaTest
        */
 
         [TestMethod]
-        public void ReintegroNOVALIDO()
+        [DataRow(450, 0)]
+        [DataRow(100, -1)]
+        [DataRow(1145, -20)]
+        [DataRow(200, -100)]
+        public void ReintegroNOVALIDO(double saldoInicial, double reintegro)
         {
-            double saldoInicial = 1000;
-            double reintegro = -250;
-            double saldoFinal = saldoInicial - reintegro;
             GestionBancariaApp miApp = new GestionBancariaApp(saldoInicial);
             try
             {
@@ -33,19 +34,21 @@ namespace GestionBancariaTest
             Assert.Fail("Error. Se debía haber producido una excepción: Cantidad no válida");
 
         }
-      
+
         [TestMethod]
-        public void ReintegroINSUFICIENTE()
+        [DataRow(300, 301)]
+        [DataRow(738, 739)]
+        [DataRow(800, 1000)]
+        [DataRow(500, 650)]
+        [DataRow(0, 1)]
+        public void ReintegroINSUFICIENTE(double saldo, double cantidad)
         {
-            // preparación del caso de prueba
-            double saldo = 300;
-            double cantidad = 700;
             GestionBancariaApp miApp = new GestionBancariaApp(saldo);
             // Método a probar
             try
             {
                 miApp.RealizarReintegro(cantidad);
-            } 
+            }
             catch (ArgumentOutOfRangeException ex)
             {
                 StringAssert.Contains(ex.Message, GestionBancariaApp.ERR_SALDO_INSUFICIENTE);
@@ -55,9 +58,10 @@ namespace GestionBancariaTest
         }
 
         [TestMethod]
-        [DataRow(1000, 250, 750)]
-        [DataRow(800, 150, 650)]
+        [DataRow(1000, 1000, 0)]
+        [DataRow(500, 1, 499)]
         [DataRow(400, 50, 350)]
+        [DataRow(300, 25, 275)]
         public void ValidarReintegro(double saldoInicial, double reintegro, double saldoEsperado)
         {
             GestionBancariaApp miApp = new GestionBancariaApp(saldoInicial);
@@ -67,18 +71,19 @@ namespace GestionBancariaTest
         }
 
         [TestMethod]
-        public void ingresoNOVALIDO()
+        [DataRow(550, 0)]
+        [DataRow(900, -1)]
+        [DataRow(240, -500)]
+        public void ingresoNOVALIDO(double saldo, double cantidad)
         {
-            double saldo = 550;
-            double cantidad = 0;
-
+     
             GestionBancariaApp miApp = new GestionBancariaApp(saldo);
 
             try
             {
                 miApp.RealizarIngreso(cantidad);
             }
-            catch(ArgumentOutOfRangeException ex)
+            catch (ArgumentOutOfRangeException ex)
             {
                 StringAssert.Contains(ex.Message, GestionBancariaApp.ERR_CANTIDAD_NO_VALIDA);
                 return;
@@ -88,12 +93,11 @@ namespace GestionBancariaTest
         }
 
         [TestMethod]
-        public void ingresoCORRECTO()
+        [DataRow(600, 1, 601)]
+        [DataRow(789, 10, 799)]
+        [DataRow(1500, 200, 1700)]
+        public void ingresoCORRECTO(double saldo, double cantidad, double saldoEsperado)
         {
-            double saldo = 400;
-            double cantidad = 100;
-            double saldoEsperado = saldo + cantidad;
-
             GestionBancariaApp miApp = new GestionBancariaApp(saldo);
 
             miApp.RealizarIngreso(cantidad);

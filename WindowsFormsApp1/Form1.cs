@@ -12,7 +12,7 @@ namespace GestionBancariaAppNS
 {
     public partial class GestionBancariaApp : Form
     {
-        private double saldo;  
+        private double saldo;
         public const string ERR_CANTIDAD_NO_VALIDA = "Cantidad no válida";
         public const string ERR_SALDO_INSUFICIENTE = "Saldo insuficiente";
 
@@ -29,18 +29,19 @@ namespace GestionBancariaAppNS
 
         public double ObtenerSaldo() { return saldo; }
 
-        public string RealizarReintegro(double cantidad) 
+        public string RealizarReintegro(double cantidad)
         {
             if (cantidad <= 0)
                 throw new ArgumentOutOfRangeException(ERR_CANTIDAD_NO_VALIDA);
-        
+
             if (saldo < cantidad)
                 throw new ArgumentOutOfRangeException(ERR_SALDO_INSUFICIENTE);
             saldo -= cantidad;
             return "Reintegro realizado correctamente";
         }
 
-        public string RealizarIngreso(double cantidad) {
+        public string RealizarIngreso(double cantidad)
+        {
             if (cantidad <= 0)
                 throw new ArgumentOutOfRangeException(ERR_CANTIDAD_NO_VALIDA);
             saldo += cantidad;
